@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .table-container {
+            width: 80%; /* Adjust the width as needed */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="table-container">
+        <h1>Help page</h1>
+        <table>
+            <tr>
+                <th colspan="2">0.0.0.0:8000(Refer the table for options)</th>
+            </tr>
+            <tr>
+                <td>/default.</td>
+                <td>Default values set to duration, path, urls</td>
+            </tr>
+            <tr>
+                <td>/i/&lt;duration&gt;</td>
+                <td>Specify the monitoring interval in seconds (/i/5 : for 5 seconds), path and urls set to default values</td>
+            </tr>
+            <tr>
+                <td>/l/&lt;path&gt;</td>
+                <td>Specify the directory path to store the CSV logs (/l//Users/amandeep/Desktop/prac), duration and urls set to default values</td>
+            </tr>
+            <tr>
+                <td>/u?urls</td>
+                <td>Specify the list of URLs for monitoring(/u/?key1=url1&amp;key2=url2....), duration and path set to default values</td>
+            </tr>
+            <tr>
+                <td>/i/&lt;duration&gt;/l/&lt;path&gt;</td>
+                <td>Specify monitoring interval and path for log file, urls set to default value</td>
+            </tr>
+            <tr>
+                <td>/i/&lt;duration&gt;/u?urls</td>
+                <td>Specify monitoring interval and urls, path set to default value</td>
+            </tr>
+            <tr>
+                <td>/l/&lt;path&gt;/u?urls</td>
+                <td>Specify path and urls, duration set to default value</td>
+            </tr>
+            <tr>
+                <td>/i/&lt;duration&gt;/l/&lt;path&gt;/u?urls</td>
+                <td>Specify duration, path and urls</td>
+            </tr>
+            <tr>
+                <th colspan="2">default_duration = 5s, default_path = /Users/amandeep.miriyala/Desktop/prac, default_urls = you will find them in response data</th>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

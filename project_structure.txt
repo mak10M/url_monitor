@@ -1,0 +1,21 @@
+ |
+ |—— tests                            // unit test
+ |
+ |—— sanic_crudvue                    // main project
+ |      |
+ |      |—— config                    // base config in backend
+ |      |
+ |      |—— crud                      // core app in backend
+ |      |
+ |      |—— frontend
+ |      |       |__ build             //  build static resource and webpack config
+ |      |       |__ dist              // build target directory
+ |      |       |__ src               // source code in frontend
+ |      |       |    |
+ |      |       |    |__ components   // a vast variety of component
+ |      |       |    |
+ |      |       |    |__ App.vue      // main web page
+ |      |       |    |
+ |      |       |    |__ eventBus.js  //  a central event bus for non Parent-Child Communication
+ |      |       |    |
+ |      |       |    |__ main.js      // webpack entry

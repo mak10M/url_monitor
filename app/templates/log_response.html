@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }}
+
+        .table-container {{
+            width: 80%;
+            max-height: 80vh; /* Adjust the max-height to control scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }}
+
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            background-color: #fff;
+            text-align: center;
+        }}
+
+        th, td {{
+            padding: 12px 16px;
+        }}
+
+        th {{
+            background-color: #f2f2f2;
+        }}
+
+        tr:nth-child(even) {{
+            background-color: #f2f2f2;
+        }}
+
+        tr:hover {{
+            background-color: #f7f7f7;
+        }}
+    </style>
+    <meta http-equiv="refresh" content="{refresh_interval_seconds}">
+</head>
+<body>
+    <div class="table-container">
+        <table>
+            {html_table}
+        </table>
+    </div>
+</body>
+</html>

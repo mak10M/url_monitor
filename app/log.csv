@@ -1,0 +1,12 @@
+URL,Start_time,Availability_Status,Response_status,Response_Time(s)
+---phase---,---1---,---of---,---get---,---requests---
+https://www.google.com,2023-07-21 17:28:32,active,200,0.6442961692810059
+https://www.facebook.com,2023-07-21 17:28:32,inactive,0,0.049275875091552734
+https://www.twitter.com,2023-07-21 17:28:32,active,403,0.4606349468231201
+https://www.instagram.com,2023-07-21 17:28:32,active,403,0.09201598167419434
+https://www.linkedin.com,2023-07-21 17:28:32,active,200,0.40828490257263184
+https://www.youtube.com,2023-07-21 17:28:32,active,403,0.18123507499694824
+https://www.reddit.com,2023-07-21 17:28:32,active,200,1.184922695159912
+https://www.github.com,2023-07-21 17:28:32,active,200,0.27699923515319824
+https://www.example.com,2023-07-21 17:28:32,active,200,1.1082639694213867
+https://www.wikipedia.org,2023-07-21 17:28:32,active,200,0.292421817779541
