@@ -1,21 +1,26 @@
  |
- |—— tests                            // unit test
  |
- |—— sanic_crudvue                    // main project
+ |------app                           // main project
  |      |
- |      |—— config                    // base config in backend
+ |      |—— config                    // has all the variables used across the project
  |      |
- |      |—— crud                      // core app in backend
+ |      |—— controller                // core functionality has been implemented here(sends periodic url requests)
  |      |
- |      |—— frontend
- |      |       |__ build             //  build static resource and webpack config
- |      |       |__ dist              // build target directory
- |      |       |__ src               // source code in frontend
- |      |       |    |
- |      |       |    |__ components   // a vast variety of component
- |      |       |    |
- |      |       |    |__ App.vue      // main web page
- |      |       |    |
- |      |       |    |__ eventBus.js  //  a central event bus for non Parent-Child Communication
- |      |       |    |
- |      |       |    |__ main.js      // webpack entry
+ |      |—— routes                    // all the possible route services are bundled in routes.py
+ |      |
+ |      |—— templates——
+ |      |              |
+ |      |              |---final_response.html  // contains the url availability response that needs to be sent to user in html format
+ |      |              |
+ |      |              |---lobby_response.html  // contains the help menu response that needs to be sent to user in html format
+ |      |              |
+ |      |              |---log_response.html    // contains the dynamic intermediate response in html format
+ |      |
+ |
+ |------project_structure.txt          // contains project file structure and short description about files
+ |
+ |------README.md                      // contains setup and execution instructions
+ |
+ |------req.txt                        // contains project requirements
+ |
+ |------service.py                     // file which gets executed to run the project

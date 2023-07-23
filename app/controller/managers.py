@@ -1,12 +1,13 @@
 import asyncio
 import aiohttp
 import csv
+import os
+from pathlib import Path
 from datetime import datetime
 import time
 import pandas as pd
 from sanic import response
 from app.config.config import timeout, refresh_interval_seconds
-
 
 task = None
 
@@ -16,12 +17,17 @@ async def get_request_sender(session, url):
     t = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     start_time = time.time()  # Record the start time
     try:
-        async with session.get(url, ssl=True, timeout=timeout) as res:  # Make get requests
-            if res.status != 200:
-                raise Exception
-            return url, t, "Available", 200, time.time() - start_time
+        async with session.get(url, ssl=True, timeout=timeout) as res:
+            if res.status == 200:
+                return url, t, "Available", res.status, time.time() - start_time
+            else:
+                return url, t, "Unavailable", res.status, time.time() - start_time
+    except aiohttp.ClientConnectionError:
+        return url, t, "Connection Error", 0, time.time() - start_time
+    except asyncio.TimeoutError:
+        return url, t, "Timeout Error", 0, time.time() - start_time
     except Exception as e:
-        return url, t, "Unavailable", 404, time.time() - start_time
+        return url, t, "unhandled Exception", 0, time.time() - start_time
 
 
 # Invoke get_request_sender for set of urls periodically and populates the data into log.csv file
@@ -52,7 +58,8 @@ async def periodic_tasks_launcher(timeperiod, urls, path):
 
             # Launch all tasks at the same time
             results = await asyncio.gather(*tasks)
-            tasks.clear()  # Clear the tasks list
+            # Clear the tasks list
+            tasks.clear()
             task1.cancel()
             # logging the data into csv file
             with open(csv_file, mode='a', newline='') as file:
@@ -69,7 +76,6 @@ async def periodic_tasks_launcher(timeperiod, urls, path):
             html_table = df.to_html(index=False)
 
             with open('/Users/amandeep.miriyala/Desktop/prac/app/templates/log_response.html', 'r') as file:
-                print("hi")
                 html_template = file.read()
 
             html_response = html_template.format(html_table=html_table, refresh_interval_seconds=refresh_interval_seconds)
@@ -89,3 +95,11 @@ async def main(request, timeperiod, urls, path):
         task.cancel()
     task = asyncio.ensure_future(periodic_tasks_launcher(timeperiod, urls, path))
     return response.redirect("/real_time_status")
+
+
+async def is_valid_path(duration, urls, user_input, request):
+    if not os.path.exists(user_input):
+        return response.text("Please enter a valid log file path")
+    return await main(request, duration, urls, Path(user_input))
+
+

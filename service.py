@@ -8,7 +8,7 @@ app.blueprint(url_monitor)
 
 @app.exception(NotFound)
 async def wrong_url(request, exception):
-    return response.text("Please enter a correct url")
+    return response.text("Please enter a valid url")
 
 
 if __name__ == "__main__":
