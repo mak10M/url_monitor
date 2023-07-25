@@ -16,6 +16,20 @@ async def options(request):
     return await response.file('/Users/amandeep.miriyala/Desktop/prac/app/templates/lobby_response.html')
 
 
+@url_monitor.route('/enter_email')
+async def enter_email(request):
+    return await response.file('/Users/amandeep.miriyala/Desktop/prac/app/templates/user_email_id.html')
+
+
+@url_monitor.route('/user_email', methods=['POST'])
+def user_email(request):
+    data = request.json
+    email = data.get('email')
+    with open('/Users/amandeep.miriyala/Desktop/prac/app/user_emails.txt', 'w') as file:
+        file.write(email)
+    return response.redirect('/')
+
+
 @url_monitor.route('/default')
 async def task_d(request):
     return await main(request, DEFAULT_DURATION, DEFAULT_URLS, DEFAULT_PATH)

@@ -2,6 +2,9 @@ import asyncio
 import aiohttp
 import csv
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from pathlib import Path
 from datetime import datetime
 import time
@@ -10,6 +13,39 @@ from sanic import response
 from app.config.config import timeout, refresh_interval_seconds
 
 task = None
+
+
+def send_email(email_id, subject, body):
+
+    # Sender's email credentials (replace with your own)
+    sender_email = 'amandeep.miriyala@1mg.com'
+    sender_password = 'whzvelrgaqspxiix'
+
+    # Create a MIMEText object with the email body
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = email_id
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    # Connect to the SMTP server
+    server = smtplib.SMTP('smtp.gmail.com', 587)  # Replace with your SMTP server address and port
+    server.starttls()  # Enable TLS encryption
+
+    # Log in to the SMTP server
+    try:
+        server.login(sender_email, sender_password)
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"Authentication error: {e}")
+        # Handle the authentication error here
+    except smtplib.SMTPException as e:
+        print(f"SMTP error: {e}")
+        # Handle other SMTP-related errors here
+    # Send the email
+    server.sendmail(sender_email, email_id, msg.as_string())
+
+    # Close the connection to the SMTP server
+    server.quit()
 
 
 # url get request sender
@@ -39,8 +75,13 @@ async def periodic_tasks_launcher(timeperiod, urls, path):
 
     tasks = []  # Initialize the list for
     csv_file = path / "log.csv"  # Set the path for csv file
-    # start = time.time()
     it = 0  # Initialise 'it' used to keep track of current phase of get requests
+
+    with open('/Users/amandeep.miriyala/Desktop/prac/app/user_emails.txt', 'r') as file:
+        email_id = file.readline().strip()  # Read the first line and remove newline character if present
+
+    # Create a dictionary with URLs as keys and value 0 for each URL
+    url_dict = {url: 0 for url in urls}
 
     # Clear existing log file data
     with open(csv_file, mode='w', newline='') as file:
@@ -61,13 +102,21 @@ async def periodic_tasks_launcher(timeperiod, urls, path):
             # Clear the tasks list
             tasks.clear()
             task1.cancel()
-            # logging the data into csv file
+
+            # logging the data into csv file and sending email notification
             with open(csv_file, mode='a', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow(["---phase---", f"---{it}---", "---of---", "---get---", "---requests---"])
                 for url, start_time, availability, response_status, response_time in results:
                     writer.writerow([str(url), str(start_time), str(availability), str(response_status),
                                      str(round(response_time, 2))])
+                    if availability in ["Unavailable", "Connection Error", "Timeout Error", "unhandled Exception"]:
+                        url_dict[url] += 1
+                        if url_dict[url] == 5:
+                            send_email(email_id, "url unavailable notification", f"{url} is unavailable for 5 consecutive requests")
+                            url_dict[url] = 0
+                    else:
+                        url_dict[url] = 0
 
             # Read the CSV file into a pandas DataFrame
             df = pd.read_csv(csv_file)
