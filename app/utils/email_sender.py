@@ -3,7 +3,21 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 import os
+from app.config.config import user_email
 load_dotenv()
+
+
+class UserEmail:
+    USEREMAILFILE = user_email
+
+    def __init__(self, request):
+        self.request = request
+
+    def write_email_into_csv(self):
+        data = self.request.json
+        email = data.get('email')
+        with open(UserEmail.USEREMAILFILE, 'w') as file:
+            file.write(email)
 
 
 class EmailSender:

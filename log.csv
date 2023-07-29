@@ -1,37 +1,23 @@
 URL,Start_time,Availability_Status,Response_status,Response_Time(s)
 ---phase---,---1---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:07,unhandled Exception,0,0.0
+https://www.fefggeg.com,2023-07-29 20:12:20,Connection Error,0,0.04
 ---phase---,---2---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:11,unhandled Exception,0,0.0
+https://www.fefggeg.com,2023-07-29 20:12:24,Connection Error,0,0.02
 ---phase---,---3---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:15,unhandled Exception,0,0.0
+https://www.fefggeg.com,2023-07-29 20:12:28,Connection Error,0,0.01
 ---phase---,---4---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:19,unhandled Exception,0,0.0
+https://www.fefggeg.com,2023-07-29 20:12:32,Connection Error,0,0.0
 ---phase---,---5---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:23,unhandled Exception,0,0.0
+https://www.fefggeg.com,2023-07-29 20:12:36,Connection Error,0,0.01
 ---phase---,---6---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:31,unhandled Exception,0,0.0
+https://www.fefggeg.com,2023-07-29 20:12:44,Connection Error,0,0.0
 ---phase---,---7---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:35,unhandled Exception,0,0.0
+https://www.fefggeg.com,2023-07-29 20:12:48,Connection Error,0,0.01
 ---phase---,---8---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:39,unhandled Exception,0,0.0
+https://www.fefggeg.com,2023-07-29 20:12:52,Connection Error,0,0.01
 ---phase---,---9---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:43,unhandled Exception,0,0.0
+https://www.fefggeg.com,2023-07-29 20:12:56,Connection Error,0,0.0
 ---phase---,---10---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:47,unhandled Exception,0,0.0
+https://www.fefggeg.com,2023-07-29 20:13:00,Connection Error,0,0.0
 ---phase---,---11---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:55,unhandled Exception,0,0.0
----phase---,---12---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:38:59,unhandled Exception,0,0.0
----phase---,---13---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:39:03,unhandled Exception,0,0.0
----phase---,---14---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:39:07,unhandled Exception,0,0.01
----phase---,---15---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:39:11,unhandled Exception,0,0.0
----phase---,---16---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:39:18,unhandled Exception,0,0.0
----phase---,---17---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:39:22,unhandled Exception,0,0.0
----phase---,---18---,---of---,---get---,---requests---
-www.punna.com,2023-07-29 19:39:27,unhandled Exception,0,0.01
+https://www.fefggeg.com,2023-07-29 20:13:07,Connection Error,0,0.01

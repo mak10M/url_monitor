@@ -3,13 +3,13 @@ import asyncio
 import aiohttp
 from app.utils.get_request_sender import GetRequestSender
 import pandas as pd
-from app.config.config import refresh_interval_seconds
+from app.config.config import refresh_interval_seconds, final_response, log_response, user_email
 from app.utils.email_sender import EmailSender
 
 
 class PeriodicTasksLauncher:
-    RESPONSE_TEMPLATE_PATH = "/Users/amandeep.miriyala/Desktop/prac/app/templates/final_response.html"
-    LOG_RESPONSE_PATH = "/Users/amandeep.miriyala/Desktop/prac/app/templates/log_response.html"
+    RESPONSE_TEMPLATE_PATH = final_response
+    LOG_RESPONSE_PATH = log_response
 
     @classmethod
     async def _launch_tasks_periodically(cls, timeperiod, urls, path):
@@ -18,7 +18,7 @@ class PeriodicTasksLauncher:
         it = 0  # Initialise 'it' used to keep track of current phase of get requests
 
         cls._truncate_file(cls.RESPONSE_TEMPLATE_PATH)
-        email_id = cls._read_email("/Users/amandeep.miriyala/Desktop/prac/app/user_emails.txt")
+        email_id = cls._read_email(user_email)
         # create EmailSender object
         email = EmailSender(email_id)
         # Create a dictionary with URLs as keys and value 0 for each URL

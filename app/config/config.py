@@ -26,3 +26,12 @@ timeout = 3
 # Set the time interval for auto-refresh (in seconds)
 refresh_interval_seconds = 5
 
+lobby_response = "/Users/amandeep.miriyala/Desktop/prac/app/templates/lobby_response.html"
+
+email_form = "/Users/amandeep.miriyala/Desktop/prac/app/templates/user_email_id.html"
+
+final_response = "/Users/amandeep.miriyala/Desktop/prac/app/templates/final_response.html"
+
+user_email = "/Users/amandeep.miriyala/Desktop/prac/app/user_emails.txt"
+
+log_response = "/Users/amandeep.miriyala/Desktop/prac/app/templates/log_response.html"
