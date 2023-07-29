@@ -1,28 +1,24 @@
 from sanic import response, Blueprint
 from app.config.config import DEFAULT_URLS, DEFAULT_PATH, DEFAULT_DURATION
-from app.controller.managers import main, is_valid_path
+from app.controller.managers import Main
+from app.utils.request_parser import RequestParser
+from pathlib import Path
 
 url_monitor = Blueprint("mini_project")
 
 
-# Display the data in html format at UI
-@url_monitor.route('/real_time_status')
-async def rts(request):
-    return await response.file("/Users/amandeep.miriyala/Desktop/prac/app/templates/final_response.html")
-
-
 @url_monitor.route('/')
-async def options(request):
+async def user_url_options(request):
     return await response.file('/Users/amandeep.miriyala/Desktop/prac/app/templates/lobby_response.html')
 
 
 @url_monitor.route('/enter_email')
-async def enter_email(request):
+async def user_email_form(request):
     return await response.file('/Users/amandeep.miriyala/Desktop/prac/app/templates/user_email_id.html')
 
 
 @url_monitor.route('/user_email', methods=['POST'])
-def user_email(request):
+async def user_email_response(request):
     data = request.json
     email = data.get('email')
     with open('/Users/amandeep.miriyala/Desktop/prac/app/user_emails.txt', 'w') as file:
@@ -31,77 +27,54 @@ def user_email(request):
 
 
 @url_monitor.route('/default')
-async def task_d(request):
-    return await main(request, DEFAULT_DURATION, DEFAULT_URLS, DEFAULT_PATH)
+async def default_route(request):
+    return await Main(DEFAULT_DURATION, DEFAULT_URLS, DEFAULT_PATH).main()
 
 
 @url_monitor.route('/i/<duration>')
-async def task_t(request, duration):
-    try:
-        int(duration)
-        return await main(request, int(duration), DEFAULT_URLS, DEFAULT_PATH)
-    except ValueError:
-        return response.text("Duration should be an integer, please try again")
+async def duration_specific_route(request, duration):
+    return await Main(duration, DEFAULT_URLS, DEFAULT_PATH).main()
 
 
 @url_monitor.route('/l/<path:path>')
-async def task_p(request, path):
-    return await is_valid_path(DEFAULT_DURATION, DEFAULT_URLS, path, request)
+async def path_specific_route(request, path):
+    return await Main(DEFAULT_DURATION, DEFAULT_URLS, Path(path)).main()
 
 
 @url_monitor.route('/i/<duration>/l/<path:path>')
-async def task_d_p(request, duration, path):
-    try:
-        int(duration)
-        return await is_valid_path(duration, DEFAULT_URLS, path, request)
-    except ValueError:
-        return response.text("Duration should be an integer, please try again")
+async def duration_path_specific_route(request, duration, path):
+    return await Main(duration, DEFAULT_URLS, Path(path)).main()
 
 
 @url_monitor.route('/u')
-async def task_url(request):
-    args = request.args
-    urls = []
-    for i in range(1, len(args) + 1):
-        urls.append(args.get(f'key{i}'))
-
-    return await main(request, DEFAULT_DURATION, urls, DEFAULT_PATH)
+async def custom_url_specific_route(request):
+    parser = RequestParser(request)
+    parser.parse_request()
+    return await Main(DEFAULT_DURATION, parser.urls, DEFAULT_PATH).main()
 
 
 @url_monitor.route('/i/<duration>/u')
-async def task_d_url(request, duration):
-    try:
-        int(duration)
-        args = request.args
-        urls = []
-        for i in range(1, len(args) + 1):
-            urls.append(args.get(f'key{i}'))
-        return await main(request, int(duration), urls, DEFAULT_PATH)
-    except ValueError:
-        return response.text("Duration should be an integer, please try again")
+async def duration_custom_url_specific_route(request, duration):
+    parser = RequestParser(request)
+    parser.parse_request()
+    return await Main(duration, parser.urls, DEFAULT_PATH).main()
 
 
 @url_monitor.route('/l/<path:path>/u')
-async def task_p_url(request, path):
-    args = request.args
-    urls = []
-    for i in range(1, len(args) + 1):
-        urls.append(args.get(f'key{i}'))
-    return await is_valid_path(DEFAULT_DURATION, urls, path, request)
+async def path_custom_url_specific_route(request, path):
+    parser = RequestParser(request)
+    parser.parse_request()
+    return await Main(DEFAULT_DURATION, parser.urls, Path(path)).main()
 
 
 @url_monitor.route('/i/<duration>/l/<path:path>/u')
-async def task_d_p_url(request, duration, path):
-    try:
-        args = request.args
-        urls = []
-        for i in range(1, len(args) + 1):
-            urls.append(args.get(f'key{i}'))
-        int(duration)
-        return await is_valid_path(duration, urls, path, request)
-
-    except ValueError:
-        return response.text("Duration should be an integer, please try again")
+async def duration_path_custom_url_specific_route(request, duration, path):
+    parser = RequestParser(request)
+    parser.parse_request()
+    return await Main(duration, parser.urls, Path(path)).main()
 
 
-
+# Display the data in html format at UI
+@url_monitor.route('/real_time_status')
+async def url_availability_response(request):
+    return await response.file("/Users/amandeep.miriyala/Desktop/prac/app/templates/final_response.html")
