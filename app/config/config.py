@@ -18,7 +18,7 @@ DEFAULT_URLS = [
 DEFAULT_PATH = Path("/Users/amandeep.miriyala/Desktop/prac")
 
 # Default timeperiod gap for making next set of get requests
-DEFAULT_DURATION = 4
+DEFAULT_DURATION = 5
 
 # Maximum time(in seconds) server can wait for the response after making a get request
 timeout = 3

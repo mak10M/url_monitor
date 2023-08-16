@@ -1,28 +1,16 @@
 from sanic import response, Blueprint
-from app.config.config import DEFAULT_URLS, DEFAULT_PATH, DEFAULT_DURATION, lobby_response, email_form, final_response
+from app.config.config import DEFAULT_URLS, DEFAULT_PATH, DEFAULT_DURATION, lobby_response, final_response
 from app.controller.managers import Main
 from app.utils.request_parser import RequestParser
 from pathlib import Path
-from app.utils.email_sender import UserEmail
+from app.utils.tasks_launcher_helpers import PeriodicTasksLauncher
 
-
-url_monitor = Blueprint("mini_project")
+url_monitor = Blueprint("url_monitor")
 
 
 @url_monitor.route('/')
 async def user_url_options(request):
-    return await response.file(lobby_response)
-
-
-@url_monitor.route('/enter_email')
-async def user_email_form(request):
-    return await response.file(email_form)
-
-
-@url_monitor.route('/user_email', methods=['POST'])
-async def user_email_response(request):
-    UserEmail(request).write_email_into_csv()
-    return response.redirect('/')
+    return response.html(await PeriodicTasksLauncher.read_file(lobby_response), status=200, headers={"Content-Type": "text/html"})
 
 
 @url_monitor.route('/default')
@@ -76,4 +64,4 @@ async def duration_path_custom_url_specific_route(request, duration, path):
 # Display the data in html format at UI
 @url_monitor.route('/real_time_status')
 async def url_availability_response(request):
-    return await response.file(final_response)
+    return response.html(await PeriodicTasksLauncher.read_file(final_response), status=200, headers={"Content-Type": "text/html"})

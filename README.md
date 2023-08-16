@@ -18,4 +18,4 @@ cd urlmonitor
 pipenv install
 pipenv shell
 pip install -r req.txt
-python service.py
+sanic app.service --dev

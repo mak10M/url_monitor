@@ -1,10 +1,12 @@
 import csv
 import asyncio
 import aiohttp
+from sanic import Sanic
 from app.utils.get_request_sender import GetRequestSender
 import pandas as pd
 from app.config.config import refresh_interval_seconds, final_response, log_response, user_email
 from app.utils.email_sender import EmailSender
+import aiofiles
 
 
 class PeriodicTasksLauncher:
@@ -12,18 +14,18 @@ class PeriodicTasksLauncher:
     LOG_RESPONSE_PATH = log_response
 
     @classmethod
-    async def _launch_tasks_periodically(cls, timeperiod, urls, path):
+    async def launch_tasks_periodically(cls, timeperiod, urls, path):
         tasks = []  # Initialize the list for
         csv_file = path / "log.csv"  # Set the path for csv file
         it = 0  # Initialise 'it' used to keep track of current phase of get requests
 
-        cls._truncate_file(cls.RESPONSE_TEMPLATE_PATH)
-        email_id = cls._read_email(user_email)
+        await cls._truncate_file(cls.RESPONSE_TEMPLATE_PATH)
+        email_id = await cls._read_email(user_email)
         # create EmailSender object
         email = EmailSender(email_id)
         # Create a dictionary with URLs as keys and value 0 for each URL
         url_dict = {url: 0 for url in urls}
-        cls._clear_csvfile(csv_file)
+        await cls._clear_csvfile(csv_file)
 
         # Invoke get_request_maker function periodically
         while "True":
@@ -34,50 +36,49 @@ class PeriodicTasksLauncher:
                 results = await cls._create_tasks(session, urls, tasks)
                 # Clear the tasks list
                 tasks.clear()
-                cls._write_into_csv(csv_file, it, results, url_dict, email)
+                await cls._write_into_csv(csv_file, it, results, url_dict, email)
                 # clear the results list
                 results.clear()
-                cls._final_response(csv_file)
+                await cls._final_response(csv_file)
                 # Wait for timeperiod seconds before making next set of get requests
                 await asyncio.sleep(timeperiod)
 
     @classmethod
-    def _truncate_file(cls, file_path):
+    async def _truncate_file(cls, file_path):
         # Open the file in write mode and truncate its contents to 0 bytes
-        with open(file_path, "w") as file:
-            file.truncate()
+        async with aiofiles.open(file_path, "w") as file:
+            await file.truncate()
 
     @classmethod
-    def _read_email(cls, file_path):
+    async def _read_email(cls, file_path):
         # Open the file in read mode and read the first line and remove newline character if present
-        with open(file_path, 'r') as file:
-            return file.readline().strip()
+        async with aiofiles.open(file_path, 'r') as file:
+            return await file.read()
 
     @classmethod
-    def _clear_csvfile(cls, file_path):
+    async def _clear_csvfile(cls, file_path):
         # Clear existing log file data
-        with open(file_path, mode='w', newline='') as file:
+        async with aiofiles.open(file_path, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["URL", "Start_time", "Availability_Status", "Response_status", "Response_Time(s)"])
+            await writer.writerow(["URL", "Start_time", "Availability_Status", "Response_status", "Response_Time(s)"])
 
     @classmethod
     async def _create_tasks(cls, session, urls, tasks):
-        # print("here4")
+        app = Sanic.get_app()
         request = GetRequestSender(session)
         for url in urls:
-            task1 = asyncio.create_task(request.send_get_request(url))
-            tasks.append(task1)
+            tasks.append(app.add_task(request.send_get_request(url)))
         # Launch all tasks at the same time
         return await asyncio.gather(*tasks)
 
     @classmethod
-    def _write_into_csv(cls, file_path, it, results, url_dict, email):
+    async def _write_into_csv(cls, file_path, it, results, url_dict, email):
         # logging the data into csv file and sending email notification
-        with open(file_path, mode='a', newline='') as file:
+        async with aiofiles.open(file_path, mode='a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["---phase---", f"---{it}---", "---of---", "---get---", "---requests---"])
+            await writer.writerow(["---phase---", f"---{it}---", "---of---", "---get---", "---requests---"])
             for url, start_time, availability, response_status, response_time in results:
-                writer.writerow([str(url), str(start_time), str(availability), str(response_status), str(round(response_time, 2))])
+                await writer.writerow([str(url), str(start_time), str(availability), str(response_status), str(round(response_time, 2))])
                 if availability in ["Unavailable", "Connection Error", "Timeout Error", "unhandled Exception"]:
                     url_dict[url] += 1
                     if url_dict[url] == 5:
@@ -88,15 +89,22 @@ class PeriodicTasksLauncher:
                     url_dict[url] = 0
 
     @classmethod
-    def _final_response(cls, csv_file):
+    async def _final_response(cls, csv_file):
         # Read the CSV file into a pandas DataFrame
         df = pd.read_csv(csv_file)
         # Convert the DataFrame to an HTML table
         html_table = df.to_html(index=False)
-        with open(cls.LOG_RESPONSE_PATH, 'r') as file:
-            html_template = file.read()
+        html_template = await cls.read_file(cls.LOG_RESPONSE_PATH)
         html_response = html_template.format(html_table=html_table, refresh_interval_seconds=refresh_interval_seconds)
-        with open(cls.RESPONSE_TEMPLATE_PATH, "w") as file:
-            file.write(html_response)
+        await cls.write_file(cls.RESPONSE_TEMPLATE_PATH, html_response)
 
+    @classmethod
+    async def read_file(cls, filepath):
+        async with aiofiles.open(filepath, mode="r") as file:
+            html_content = await file.read()
+        return html_content
 
+    @classmethod
+    async def write_file(cls, filepath, html_response):
+        async with aiofiles.open(filepath, mode="w") as file:
+            await file.write(html_response)
